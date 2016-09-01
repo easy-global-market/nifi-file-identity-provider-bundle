@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BatchIQ/nifi-file-identity-provider-bundle.svg)](https://travis-ci.org/BatchIQ/nifi-file-identity-provider-bundle)
+
 # NiFi File Identity Provider
 An identity provider for [Apache NiFi](https://nifi.apache.org/) 1.0.0 or later, providing authentication of users
 based on username/password credentials.  Credentials are stored in a local file with Bcrypt-hashed passwords.
