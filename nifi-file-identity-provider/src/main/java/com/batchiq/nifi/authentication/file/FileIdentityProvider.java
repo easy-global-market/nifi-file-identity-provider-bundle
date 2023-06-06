@@ -92,7 +92,7 @@ public class FileIdentityProvider implements LoginIdentityProvider {
             throw new ProviderCreationException(message);
         } else {
             try {
-                expirationPeriodMilliseconds = FormatUtils.getTimeDuration(rawExpirationPeriod, TimeUnit.MILLISECONDS);
+                expirationPeriodMilliseconds = Math.round(FormatUtils.getPreciseTimeDuration(rawExpirationPeriod, TimeUnit.MILLISECONDS));
             } catch (IllegalArgumentException iae) {
                 final String message = String.format("Identity Provider '%s' property '%s' value of '%s', is not a valid time period",
                         identifier, PROPERTY_EXPIRATION_PERIOD, rawExpirationPeriod);
@@ -126,7 +126,7 @@ public class FileIdentityProvider implements LoginIdentityProvider {
                         issuer);
             }
         } catch (Exception ex) {
-            // This message is written to the log so it can be specific and helpful
+            // This message is written to the log, so it can be specific and helpful
             logger.error("Identity Provider '{}' failed attempting user authentication", identifier, ex);
 
             // This message is shown to the user so should not be very specific
