@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.batchiq.nifi.authentication.file;
+package io.egm.nifi.authentication.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,9 +32,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import com.batchiq.nifi.authentication.file.generated.ObjectFactory;
-import com.batchiq.nifi.authentication.file.generated.UserCredentials;
-import com.batchiq.nifi.authentication.file.generated.UserCredentialsList;
+import io.egm.nifi.authentication.file.generated.ObjectFactory;
+import io.egm.nifi.authentication.file.generated.UserCredentials;
+import io.egm.nifi.authentication.file.generated.UserCredentialsList;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,7 +51,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class CredentialsStore {
 
     private static final String CREDENTIALS_XSD = "/credentials.xsd";
-    private static final String JAXB_GENERATED_PATH = "com.batchiq.nifi.authentication.file.generated";
+    private static final String JAXB_GENERATED_PATH = "io.egm.nifi.authentication.file.generated";
     private static final JAXBContext JAXB_CONTEXT = initializeJaxbContext();
     private static final ObjectFactory factory = new ObjectFactory();
 

@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.batchiq</groupId>
+        <groupId>io.egm</groupId>
         <artifactId>nifi-file-identity-provider-bundle</artifactId>
         <version>1.21.0</version>
     </parent>
@@ -50,7 +50,7 @@
                             <sources>
                                 <source>src/main/xsd/credentials.xsd</source>
                             </sources>
-                            <packageName>com.batchiq.nifi.authentication.file.generated</packageName>
+                            <packageName>io.egm.nifi.authentication.file.generated</packageName>
                         </configuration>
                     </execution>
                 </executions>
@@ -65,7 +65,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.batchiq.nifi.authentication.file.CredentialsCLI</mainClass>
+                            <mainClass>io.egm.nifi.authentication.file.CredentialsCLI</mainClass>
                         </manifest>
                     </archive>
                     <descriptors>

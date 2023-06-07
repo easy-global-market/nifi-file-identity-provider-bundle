@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-com.batchiq.nifi.authentication.file.FileIdentityProvider
+io.egm.nifi.authentication.file.FileIdentityProvider

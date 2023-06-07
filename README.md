@@ -45,7 +45,7 @@ The following Login Identity Provider configuration should be added to `login-id
 ```
 <provider>
     <identifier>file-identity-provider</identifier>
-    <class>com.batchiq.nifi.authentication.file.FileIdentityProvider</class>
+    <class>io.egm.nifi.authentication.file.FileIdentityProvider</class>
     <property name="Credentials File">conf/login-credentials.xml</property>
     <property name="Authentication Expiration">12 hours</property>
 </provider>
@@ -69,7 +69,7 @@ This is an XML file with the following format:
 ```
 <!--
     This file contains users and their hashed passwords. Please see the
-    com.batchiq.nifi.authentication.file.CredentialsStore for details.
+    io.egm.nifi.authentication.file.CredentialsStore for details.
 
     User Format:
     name - must match the "identity" in authorized-users.xml

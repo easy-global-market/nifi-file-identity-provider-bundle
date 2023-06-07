@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.batchiq.nifi.authentication.file;
+package io.egm.nifi.authentication.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 
+import io.egm.nifi.authentication.file.CredentialsCLI.CredentialsAction;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.batchiq.nifi.authentication.file.CredentialsCLI.CredentialsAction;
 
 import org.junit.Assert;
 import org.junit.Before;

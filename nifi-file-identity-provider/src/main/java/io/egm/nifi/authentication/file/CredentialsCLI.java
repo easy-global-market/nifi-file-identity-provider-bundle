@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.batchiq.nifi.authentication.file;
+package io.egm.nifi.authentication.file;
 
 import java.io.Console;
 import java.io.File;
@@ -23,8 +23,8 @@ import java.io.InvalidObjectException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 
-import com.batchiq.nifi.authentication.file.generated.UserCredentials;
-import com.batchiq.nifi.authentication.file.generated.UserCredentialsList;
+import io.egm.nifi.authentication.file.generated.UserCredentials;
+import io.egm.nifi.authentication.file.generated.UserCredentialsList;
 
 
 /**

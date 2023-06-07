@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.batchiq.nifi.authentication.file;
+package io.egm.nifi.authentication.file;
 
 import java.util.Collections;
 import java.util.HashMap;

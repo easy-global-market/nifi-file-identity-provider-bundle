@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.batchiq.nifi.authentication.file;
+package io.egm.nifi.authentication.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
 import java.util.List;
 
-import com.batchiq.nifi.authentication.file.generated.UserCredentials;
-import com.batchiq.nifi.authentication.file.generated.UserCredentialsList;
+import io.egm.nifi.authentication.file.generated.UserCredentials;
+import io.egm.nifi.authentication.file.generated.UserCredentialsList;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
