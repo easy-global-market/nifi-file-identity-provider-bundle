@@ -97,25 +97,25 @@ utility in the `PasswordHasherCLI` class (see below).  Additional known compatib
 This package includes a command-line tool for simple operations on users and passwords.  Use of this tool is not required,
 it is possible to administer users with a text editor and any tool capable of generating Bcrypt 2a hashes.
 
-The JAR file `nifi-file-identity-provider-1.0.0-cli.jar` is output in the nifi-file-identity-provider/target directory.
+The JAR file `nifi-file-identity-provider-1.21.0-cli.jar` is output in the nifi-file-identity-provider/target directory.
 
 Add a user, you will be prompted for a password:
 ```
->java -jar nifi-file-identity-provider-1.0.0-cli.jar add credentials.xml jane
+>java -jar nifi-file-identity-provider-1.21.0-cli.jar add conf/login-credentials.xml jane
 Password for jane: ****
 Added user jane
 ```
 
 Reset password, you will be prompted for password:
 ```
->java -jar nifi-file-identity-provider-1.0.0-cli.jar reset credentials.xml jane
+>java -jar nifi-file-identity-provider-1.21.0-cli.jar reset conf/login-credentials.xml jane
 New Password for jane:
 Password reset for user jane
 ```
 
 List users
 ```
->java -jar nifi-file-identity-provider-1.0.0-cli.jar list credentials.xml
+>java -jar nifi-file-identity-provider-1.21.0-cli.jar list conf/login-credentials.xml
 john
 jane
 frank
@@ -123,7 +123,7 @@ frank
 
 Delete user
 ```
->java -jar nifi-file-identity-provider-1.0.0-cli.jar remove credentials.xml frank
+>java -jar nifi-file-identity-provider-1.21.0-cli.jar remove conf/login-credentials.xml frank
 Removed user frank
 ```
 
