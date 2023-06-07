@@ -1,9 +1,11 @@
-[![Build Status](https://travis-ci.org/BatchIQ/nifi-file-identity-provider-bundle.svg)](https://travis-ci.org/BatchIQ/nifi-file-identity-provider-bundle)
-
-# NiFi File Identity Provider (Archived!!)
-An identity provider for [Apache NiFi](https://nifi.apache.org/) 1.0.0 or later, providing authentication of users
+# NiFi File Identity Provider
+An identity provider for [Apache NiFi](https://nifi.apache.org/) 1.21.0 or later, providing authentication of users
 based on username/password credentials.  Credentials are stored in a local file with Bcrypt-hashed passwords.
 This may be suitable for environments without LDAP or Kerberos, or when X.509 client certificates are impractical.
+
+Note: it was previously developed and published on GitHub (under the APL license) by a company called BatchIQ that
+seems to no longer exist. An archived fork was still existing somewhere on GitHub. This project is thus a revival of
+this archive.
 
 ## Use
 To install and use this provider you must complete the following steps:
