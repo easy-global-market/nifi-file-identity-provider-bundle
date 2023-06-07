@@ -56,7 +56,11 @@ After the provider itself is configured, reference this provider in `nifi.proper
 
 ```
 nifi.security.user.login.identity.provider=file-identity-provider
+nifi.security.user.authorizer=managed-authorizer
 ```
+
+### Disable the Single User Authorizer
+In `conf/authorizers.xml`, comment out the `single-user-authorizer` configuration at the bottom of the file.
 
 ### Initialize User Credentials
 User credentials must be initialized in the credentials store file `conf/login-credentials.xml`.
@@ -85,7 +89,7 @@ utility in the `PasswordHasherCLI` class (see below).  Additional known compatib
 
 * Spring Security's [BCryptPasswordEncoder](https://docs.spring.io/spring-security/site/docs/current/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html) class
 * Python package [bcrypt](https://pypi.python.org/pypi/bcrypt/2.0.0)
-
+* Online [Bcrypt Generator](https://appdevtools.com/bcrypt-generator)
 
 ### CLI Tool
 This package includes a command-line tool for simple operations on users and passwords.  Use of this tool is not required,
