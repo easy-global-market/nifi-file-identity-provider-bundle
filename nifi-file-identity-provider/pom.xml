@@ -106,28 +106,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.jvnet.jaxb2.maven2</groupId>
-                        <artifactId>maven-jaxb2-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>credentials</id>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                                <configuration>
-                                    <generatePackage>org.apache.nifi.authorization.file.generated</generatePackage>
-                                    <schemaDirectory>src/main/xsd</schemaDirectory>
-                                    <schemaIncludes>
-                                        <include>credentials.xsd</include>
-                                    </schemaIncludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <generateDirectory>${project.build.directory}/generated-sources/jaxb</generateDirectory>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
             <dependencies>
