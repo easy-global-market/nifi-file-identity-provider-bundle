@@ -19,6 +19,7 @@ package io.egm.nifi.authentication.file;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import io.egm.nifi.authentication.file.generated.UserCredentials;
@@ -43,7 +44,7 @@ public class TestCredentialsStore {
 
     @Test(expected = FileNotFoundException.class)
     public void testConfigFileNotFound() throws Exception {
-        final UserCredentialsList credentials = CredentialsStore.loadCredentialsList("NonExistingFile.xml");
+        CredentialsStore.loadCredentialsList("NonExistingFile.xml");
     }
 
     @Test
@@ -60,7 +61,7 @@ public class TestCredentialsStore {
     @Test
     public void testLoadInvalidCredentialsFileMessaging() throws Exception {
         try {
-            final UserCredentialsList credentials = CredentialsStore.loadCredentialsList(TEST_INVALID_CREDENTIALS_FILE);
+            CredentialsStore.loadCredentialsList(TEST_INVALID_CREDENTIALS_FILE);
         } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
             Assert.assertTrue(exceptionMessage.contains("invalid_credentials"));
@@ -69,15 +70,16 @@ public class TestCredentialsStore {
     }
 
     @Test
-    public void testLoadInvalidDuplicateUserCredentialsFileMessaging() throws Exception {
+    public void testLoadInvalidDuplicateUserCredentialsFileMessaging() {
         try {
-            final UserCredentialsList credentials = CredentialsStore.loadCredentialsList(TEST_DUPLICATE_USER_CREDENTIALS_FILE);
+            CredentialsStore.loadCredentialsList(TEST_DUPLICATE_USER_CREDENTIALS_FILE);
             Assert.fail("Duplicate user in credentials file should throw an exception");
         } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
             Assert.assertTrue(exceptionMessage.contains("unique"));
             Assert.assertTrue(exceptionMessage.contains(TEST_DUPLICATE_USER_CREDENTIALS_FILE));
         } catch (Exception ex) {
+            Assert.fail("Should have thrown an UnmarshalException");
         }
     }
 
@@ -86,9 +88,9 @@ public class TestCredentialsStore {
         File tempFile = folder.newFile("testReadWriteCredsFile_actual.xml");
         final UserCredentialsList credentials = CredentialsStore.loadCredentialsList(TEST_READ_WRITE_CREDENTIALS_FILE);
         CredentialsStore.saveCredentialsList(credentials, tempFile);
-        String actualContent = FileUtils.readFileToString(tempFile);
+        String actualContent = FileUtils.readFileToString(tempFile, StandardCharsets.UTF_8);
         File expectedFile = new File(TEST_READ_WRITE_CREDENTIALS_FILE);
-        String expectedContent = FileUtils.readFileToString(expectedFile);
+        String expectedContent = FileUtils.readFileToString(expectedFile, StandardCharsets.UTF_8);
         Assert.assertEquals(expectedContent, actualContent);
     }
 
