@@ -16,20 +16,18 @@
 
 package io.egm.nifi.authentication.file;
 
+import io.egm.nifi.authentication.file.generated.UserCredentials;
+import io.egm.nifi.authentication.file.generated.UserCredentialsList;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import io.egm.nifi.authentication.file.generated.UserCredentials;
-import io.egm.nifi.authentication.file.generated.UserCredentialsList;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestCredentialsStore {
@@ -39,23 +37,22 @@ public class TestCredentialsStore {
     private static final String TEST_DUPLICATE_USER_CREDENTIALS_FILE = "src/test/resources/test_credentials_duplicate.xml";
     private static final String TEST_READ_WRITE_CREDENTIALS_FILE = "src/test/resources/test_read_write_credentials.xml";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    @Test(expected = FileNotFoundException.class)
-    public void testConfigFileNotFound() throws Exception {
-        CredentialsStore.loadCredentialsList("NonExistingFile.xml");
+    @Test
+    public void testConfigFileNotFound() {
+        assertThrows(FileNotFoundException.class, () ->
+                CredentialsStore.loadCredentialsList("NonExistingFile.xml")
+        );
     }
 
     @Test
     public void testLoadCredentialsFile() throws Exception {
         final UserCredentialsList credentials = CredentialsStore.loadCredentialsList(TEST_CREDENTIALS_FILE);
         final List<UserCredentials> users = credentials.getUser();
-        Assert.assertEquals(2, users.size());
+        assertEquals(2, users.size());
 
         final UserCredentials userCred = users.get(0);
-        Assert.assertEquals("user1", userCred.getName());
-        Assert.assertEquals("fakePasswordHash", userCred.getPasswordHash());
+        assertEquals("user1", userCred.getName());
+        assertEquals("fakePasswordHash", userCred.getPasswordHash());
     }
 
     @Test
@@ -64,8 +61,8 @@ public class TestCredentialsStore {
             CredentialsStore.loadCredentialsList(TEST_INVALID_CREDENTIALS_FILE);
         } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
-            Assert.assertTrue(exceptionMessage.contains("invalid_credentials"));
-            Assert.assertTrue(exceptionMessage.contains(TEST_INVALID_CREDENTIALS_FILE));
+            assertTrue(exceptionMessage.contains("invalid_credentials"));
+            assertTrue(exceptionMessage.contains(TEST_INVALID_CREDENTIALS_FILE));
         }
     }
 
@@ -73,25 +70,25 @@ public class TestCredentialsStore {
     public void testLoadInvalidDuplicateUserCredentialsFileMessaging() {
         try {
             CredentialsStore.loadCredentialsList(TEST_DUPLICATE_USER_CREDENTIALS_FILE);
-            Assert.fail("Duplicate user in credentials file should throw an exception");
+            fail("Duplicate user in credentials file should throw an exception");
         } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
-            Assert.assertTrue(exceptionMessage.contains("unique"));
-            Assert.assertTrue(exceptionMessage.contains(TEST_DUPLICATE_USER_CREDENTIALS_FILE));
+            assertTrue(exceptionMessage.contains("unique"));
+            assertTrue(exceptionMessage.contains(TEST_DUPLICATE_USER_CREDENTIALS_FILE));
         } catch (Exception ex) {
-            Assert.fail("Should have thrown an UnmarshalException");
+            fail("Should have thrown an UnmarshalException");
         }
     }
 
     @Test
     public void testReadWriteCredsFile() throws Exception {
-        File tempFile = folder.newFile("testReadWriteCredsFile_actual.xml");
+        File tempFile = File.createTempFile("testReadWriteCredsFile_actual", "xml");
         final UserCredentialsList credentials = CredentialsStore.loadCredentialsList(TEST_READ_WRITE_CREDENTIALS_FILE);
         CredentialsStore.saveCredentialsList(credentials, tempFile);
         String actualContent = FileUtils.readFileToString(tempFile, StandardCharsets.UTF_8);
         File expectedFile = new File(TEST_READ_WRITE_CREDENTIALS_FILE);
         String expectedContent = FileUtils.readFileToString(expectedFile, StandardCharsets.UTF_8);
-        Assert.assertEquals(expectedContent, actualContent);
+        assertEquals(expectedContent, actualContent);
     }
 
     @Test
@@ -99,13 +96,13 @@ public class TestCredentialsStore {
         CredentialsStore credStore = new CredentialsStore();
         final String userName = "Some User";
         credStore.addUser(userName, "SuperSecret");
-        File tempFile = folder.newFile("testNewCredsFile_actual.xml");
+        File tempFile = File.createTempFile("testNewCredsFile_actual","xml");
         credStore.save(tempFile);
         CredentialsStore testStore = CredentialsStore.fromFile(tempFile);
         UserCredentialsList credentialsList = testStore.getCredentialsList();
-        Assert.assertEquals(1, credentialsList.getUser().size());
+        assertEquals(1, credentialsList.getUser().size());
         boolean passwordMatches = testStore.checkPassword(userName, "SuperSecret");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
     }
 
     @Test
@@ -114,10 +111,10 @@ public class TestCredentialsStore {
         final String userName = "Some User";
         credStore.addUser(userName, "SuperSecret");
         boolean passwordMatches = credStore.checkPassword(userName, "SuperSecret");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
         credStore.resetPassword(userName, "SuperDuperSecret");
         passwordMatches = credStore.checkPassword(userName, "SuperDuperSecret");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
     }
 
     @Test
@@ -126,9 +123,9 @@ public class TestCredentialsStore {
         final String userName = "Some User";
         credStore.addUser(userName, "SuperSecret");
         boolean passwordMatches = credStore.checkPassword(userName, "SuperSecret");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
         passwordMatches = credStore.checkPassword(userName, "WrongPassword");
-        Assert.assertFalse(passwordMatches);
+        assertFalse(passwordMatches);
     }
 
     @Test
@@ -137,23 +134,23 @@ public class TestCredentialsStore {
         final String userName = "Some User";
         credStore.addUser(userName, "SuperSecret");
         boolean removed = credStore.removeUser(userName);
-        Assert.assertTrue(removed);
+        assertTrue(removed);
         UserCredentials userCreds = credStore.findUser(userName);
-        Assert.assertNull(userCreds);
+        assertNull(userCreds);
         removed = credStore.removeUser(userName);
-        Assert.assertFalse(removed);
+        assertFalse(removed);
     }
 
     @Test
     public void testCredentialsStoreReloadsFileUpdates() throws Exception {
-        File tempFile = folder.newFile("testCredentialsStoreReloadsFileUpdates_actual.xml");
+        File tempFile = File.createTempFile("testCredentialsStoreReloadsFileUpdates_actual", "xml");
         CredentialsStore credStore = new CredentialsStore(tempFile);
         final String userName = "Some User";
         final String password1 = "SuperSecret1";
         credStore.addUser(userName, password1);
         credStore.save();
         boolean reloaded = credStore.reloadIfModified();
-        Assert.assertFalse(reloaded);
+        assertFalse(reloaded);
         CredentialsStore testStore1 = CredentialsStore.fromFile(tempFile);
         CredentialsStore testStore2 = CredentialsStore.fromFile(tempFile);
         final String password2 = "SuperSecret2";
@@ -163,20 +160,22 @@ public class TestCredentialsStore {
         long lastModified = tempFile.lastModified();
         tempFile.setLastModified(lastModified + 5000);
         reloaded = testStore2.reloadIfModified();
-        Assert.assertTrue(reloaded);
+        assertTrue(reloaded);
         boolean passwordMatches = testStore2.checkPassword(userName, password1);
-        Assert.assertFalse(passwordMatches);
+        assertFalse(passwordMatches);
         passwordMatches = testStore2.checkPassword(userName, password2);
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
     }
 
-    @Test(expected = InvalidObjectException.class)
-    public void testSaveWithoutFileThrows() throws Exception {
+    @Test
+    public void testSaveWithoutFileThrows() {
         CredentialsStore credStore = new CredentialsStore();
         final String userName = "Some User";
         final String password1 = "SuperSecret1";
-        credStore.addUser(userName, password1);
-        credStore.save();
+        assertThrows(InvalidObjectException.class, () -> {
+            credStore.addUser(userName, password1);
+            credStore.save();
+        });
     }
 
 }

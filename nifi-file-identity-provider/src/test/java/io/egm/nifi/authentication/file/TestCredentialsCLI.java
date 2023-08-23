@@ -18,17 +18,17 @@ package io.egm.nifi.authentication.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import io.egm.nifi.authentication.file.CredentialsCLI.CredentialsAction;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestCredentialsCLI {
@@ -37,13 +37,13 @@ public class TestCredentialsCLI {
     private String credentialsFilePath;
     private String tempFolderPath;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    public Path folder;
 
-    @Before
+    @BeforeEach
     public void setupTestCredentialsFile() throws Exception {
-        final File tempFolder = folder.newFolder();
-        tempFolderPath = tempFolder.getAbsolutePath();
+        //final File tempFolder = folder.newFolder();
+        tempFolderPath = folder.toAbsolutePath().toString();
         credentialsFilePath = Paths.get(tempFolderPath, "credentials.xml").toString();
         final File resourceFile = new File(TEST_CLI_CREDENTIALS_FILE);
         final File tempFile = new File(credentialsFilePath);
@@ -55,10 +55,10 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
+        assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
         action.execute();
         final String helpText = StringUtils.join(action.outputs, "\n");
-        Assert.assertTrue(helpText.contains("Usage"));
+        assertTrue(helpText.contains("Usage"));
     }
 
     @Test
@@ -66,10 +66,10 @@ public class TestCredentialsCLI {
         String[] args = new String[]{"bogus"};
         final CredentialsCLI cli = new CredentialsCLI();
         CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
+        assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
         args = new String[]{"bogus", "user", "password"};
         action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
+        assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
     }
 
     @Test
@@ -77,15 +77,15 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{"list"};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
+        assertEquals(CredentialsCLI.PrintHelpAction.class, action.getClass());
     }
 
-    @Test(expected = FileNotFoundException.class)
-    public void testListWithBadFileThrows() throws Exception {
+    @Test
+    public void testListWithBadFileThrows() {
         final String[] args = new String[]{"list", "NoSuchFile.xml"};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        action.validate();
+        assertThrows(FileNotFoundException.class, action::validate);
     }
 
     @Test
@@ -93,10 +93,10 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{"list", credentialsFilePath};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.ListUsersAction.class, action.getClass());
+        assertEquals(CredentialsCLI.ListUsersAction.class, action.getClass());
         action.execute();
-        Assert.assertEquals(action.outputs.length, 6);
-        Assert.assertEquals(action.outputs[0], "user1");
+        assertEquals(action.outputs.length, 6);
+        assertEquals(action.outputs[0], "user1");
     }
 
     @Test
@@ -105,15 +105,14 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{"add", credentialsFilePath, "someuser"};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.AddUserAction.class, action.getClass());
-        char[] secureChars = "password1".toCharArray();
-        action.secureInput = secureChars;
+        assertEquals(CredentialsCLI.AddUserAction.class, action.getClass());
+        action.secureInput = "password1".toCharArray();
         action.execute();
-        Assert.assertEquals(action.outputs.length, 1);
-        Assert.assertTrue(action.outputs[0].contains("someuser"));
+        assertEquals(action.outputs.length, 1);
+        assertTrue(action.outputs[0].contains("someuser"));
         final CredentialsStore credStore = CredentialsStore.fromFile(credentialsFilePath);
         boolean passwordMatches = credStore.checkPassword("someuser", "password1");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
 
     }
 
@@ -123,15 +122,14 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{"reset", credentialsFilePath, "user1"};
         final CredentialsCLI cli = new CredentialsCLI();
         final CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.ResetPasswordAction.class, action.getClass());
-        char[] secureChars = "ResetPassword".toCharArray();
-        action.secureInput = secureChars;
+        assertEquals(CredentialsCLI.ResetPasswordAction.class, action.getClass());
+        action.secureInput = "ResetPassword".toCharArray();
         action.execute();
-        Assert.assertEquals(action.outputs.length, 1);
-        Assert.assertTrue(action.outputs[0].contains("user1"));
+        assertEquals(action.outputs.length, 1);
+        assertTrue(action.outputs[0].contains("user1"));
         final CredentialsStore credStore = CredentialsStore.fromFile(credentialsFilePath);
         boolean passwordMatches = credStore.checkPassword(userName, "ResetPassword");
-        Assert.assertTrue(passwordMatches);
+        assertTrue(passwordMatches);
     }
 
     @Test
@@ -140,22 +138,22 @@ public class TestCredentialsCLI {
         final String[] args = new String[]{"remove", credentialsFilePath, userName};
         final CredentialsCLI cli = new CredentialsCLI();
         CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.RemoveUserAction.class, action.getClass());
+        assertEquals(CredentialsCLI.RemoveUserAction.class, action.getClass());
         action.execute();
-        Assert.assertEquals(action.outputs.length, 1);
-        Assert.assertTrue(action.outputs[0].contains(userName));
+        assertEquals(action.outputs.length, 1);
+        assertTrue(action.outputs[0].contains(userName));
         action = cli.processArgs(new String[] {"list", credentialsFilePath});
         action.execute();
-        Assert.assertEquals(5, action.outputs.length);
+        assertEquals(5, action.outputs.length);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testRemoveUserNoParameter() throws Exception {
+    @Test
+    public void testRemoveUserNoParameter() {
         final String[] args = new String[]{"remove", credentialsFilePath};
         final CredentialsCLI cli = new CredentialsCLI();
         CredentialsAction action = cli.processArgs(args);
-        Assert.assertEquals(CredentialsCLI.RemoveUserAction.class, action.getClass());
-        action.validate();
+        assertEquals(CredentialsCLI.RemoveUserAction.class, action.getClass());
+        assertThrows(IllegalArgumentException.class, action::validate);
     }
 
 }

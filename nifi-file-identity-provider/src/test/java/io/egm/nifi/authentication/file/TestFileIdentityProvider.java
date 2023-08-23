@@ -33,9 +33,10 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestFileIdentityProvider {
@@ -57,34 +58,38 @@ public class TestFileIdentityProvider {
         final FileIdentityProvider provider = new FileIdentityProvider();
         provider.onConfigured(configContext);
 
-        Assert.assertEquals(TEST_CREDENTIALS_FILE, provider.getCredentialsFilePath());
-        Assert.assertEquals(5 * 60 * 1000, provider.getExpirationPeriod());
+        assertEquals(TEST_CREDENTIALS_FILE, provider.getCredentialsFilePath());
+        assertEquals(5 * 60 * 1000, provider.getExpirationPeriod());
     }
 
-    @Test(expected = ProviderCreationException.class)
-    public void testConfigurationMissingFile() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    @Test
+    public void testConfigurationMissingFile() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
                 new MockLoginIdentityProviderConfigurationContext(IDENTIFIER, configProperties);
         final FileIdentityProvider provider = new FileIdentityProvider();
-        provider.onConfigured(configContext);
+        assertThrows(ProviderCreationException.class, () ->
+                provider.onConfigured(configContext)
+        );
     }
 
-    @Test(expected = ProviderCreationException.class)
-    public void testConfigurationEmptyFile() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    @Test
+    public void testConfigurationEmptyFile() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, "");
         final LoginIdentityProviderConfigurationContext configContext =
                 new MockLoginIdentityProviderConfigurationContext(IDENTIFIER, configProperties);
         final FileIdentityProvider provider = new FileIdentityProvider();
-        provider.onConfigured(configContext);
+        assertThrows(ProviderCreationException.class, () ->
+                provider.onConfigured(configContext)
+        );
     }
 
     @Test
-    public void testConfigurationMissingFileLogsWarning() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    public void testConfigurationMissingFileLogsWarning() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final String missingFilePath = "no/such/file";
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, missingFilePath);
@@ -107,34 +112,38 @@ public class TestFileIdentityProvider {
                 break;
             }
         }
-        Assert.assertTrue(fileMessageFound);
+        assertTrue(fileMessageFound);
     }
 
-    @Test(expected = ProviderCreationException.class)
-    public void testConfigurationMissingExpiration() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    @Test
+    public void testConfigurationMissingExpiration() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         final LoginIdentityProviderConfigurationContext configContext =
                 new MockLoginIdentityProviderConfigurationContext(IDENTIFIER, configProperties);
         final FileIdentityProvider provider = new FileIdentityProvider();
-        provider.onConfigured(configContext);
+        assertThrows(ProviderCreationException.class, () ->
+                provider.onConfigured(configContext)
+        );
     }
 
-    @Test(expected = ProviderCreationException.class)
-    public void testConfigurationMalformedExpiration() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    @Test
+    public void testConfigurationMalformedExpiration() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         final String badExpirationPeriod = "3 eternities";
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, badExpirationPeriod);
         final LoginIdentityProviderConfigurationContext configContext =
                 new MockLoginIdentityProviderConfigurationContext(IDENTIFIER, configProperties);
         final FileIdentityProvider provider = new FileIdentityProvider();
-        provider.onConfigured(configContext);
+        assertThrows(ProviderCreationException.class, () ->
+                provider.onConfigured(configContext)
+        );
     }
 
-    @Test(expected = InvalidLoginCredentialsException.class)
-    public void testUserNotInFileThrows() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    @Test
+    public void testUserNotInFileThrows() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -143,17 +152,19 @@ public class TestFileIdentityProvider {
         provider.onConfigured(configContext);
 
         final LoginCredentials loginCredentials = new LoginCredentials("BogusUser", "BogusPassword");
-        provider.authenticate(loginCredentials);
+        assertThrows(InvalidLoginCredentialsException.class, () ->
+                provider.authenticate(loginCredentials)
+        );
     }
 
     @Test
-    public void testValidLoginWorks() throws Exception {
+    public void testValidLoginWorks() {
         final FileIdentityProvider provider = new FileIdentityProvider();
         final MockLoginIdentityProviderInitializationContext initContext =
                 new MockLoginIdentityProviderInitializationContext(TEST_PROVIDER_ID);
         provider.initialize(initContext);
 
-        final Map<String, String> configProperties = new HashMap<String, String>();
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -162,19 +173,19 @@ public class TestFileIdentityProvider {
 
         final LoginCredentials loginCredentials = new LoginCredentials("user2", "CantGuessMe");
         final AuthenticationResponse authResponse = provider.authenticate(loginCredentials);
-        Assert.assertEquals("user2", authResponse.getUsername());
-        Assert.assertEquals("FileIdentityProvider", authResponse.getIssuer());
-        Assert.assertEquals("user2", authResponse.getIdentity());
+        assertEquals("user2", authResponse.getUsername());
+        assertEquals("FileIdentityProvider", authResponse.getIssuer());
+        assertEquals("user2", authResponse.getIdentity());
     }
 
     @Test
-    public void testValidLoginIsCaseInsensitive() throws Exception {
+    public void testValidLoginIsCaseInsensitive() {
         final FileIdentityProvider provider = new FileIdentityProvider();
         final MockLoginIdentityProviderInitializationContext initContext =
                 new MockLoginIdentityProviderInitializationContext(TEST_PROVIDER_ID);
         provider.initialize(initContext);
 
-        final Map<String, String> configProperties = new HashMap<String, String>();
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -187,14 +198,14 @@ public class TestFileIdentityProvider {
         final AuthenticationResponse authResponseUppercase = provider.authenticate(loginCredentialsUppercase);
     }
 
-    @Test(expected = InvalidLoginCredentialsException.class)
-    public void testValidUserWrongPasswordThrows() throws Exception {
+    @Test
+    public void testValidUserWrongPasswordThrows() {
         final FileIdentityProvider provider = new FileIdentityProvider();
         final MockLoginIdentityProviderInitializationContext initContext =
                 new MockLoginIdentityProviderInitializationContext(TEST_PROVIDER_ID);
         provider.initialize(initContext);
 
-        final Map<String, String> configProperties = new HashMap<String, String>();
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -202,17 +213,19 @@ public class TestFileIdentityProvider {
         provider.onConfigured(configContext);
 
         final LoginCredentials loginCredentials = new LoginCredentials("user2", "WrongPassword");
-        final AuthenticationResponse authResponse = provider.authenticate(loginCredentials);
+        assertThrows(InvalidLoginCredentialsException.class, () ->
+                provider.authenticate(loginCredentials)
+        );
     }
 
-    @Test(expected = IdentityAccessException.class)
-    public void testLoginUsersFileInvalidThrows() throws Exception {
+    @Test
+    public void testLoginUsersFileInvalidThrows() {
         final FileIdentityProvider provider = new FileIdentityProvider();
         final MockLoginIdentityProviderInitializationContext initContext =
                 new MockLoginIdentityProviderInitializationContext(TEST_PROVIDER_ID);
         provider.initialize(initContext);
 
-        final Map<String, String> configProperties = new HashMap<String, String>();
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_INVALID_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -220,7 +233,9 @@ public class TestFileIdentityProvider {
         provider.onConfigured(configContext);
 
         final LoginCredentials loginCredentials = new LoginCredentials("user1", "SomePassword");
-        final AuthenticationResponse authResponse = provider.authenticate(loginCredentials);
+        assertThrows(IdentityAccessException.class, () ->
+                provider.authenticate(loginCredentials)
+        );
     }
 
     class MockLoginIdentityProviderConfigurationContext implements LoginIdentityProviderConfigurationContext {
