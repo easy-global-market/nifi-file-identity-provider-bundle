@@ -19,7 +19,7 @@
 
     <groupId>io.egm</groupId>
     <artifactId>nifi-file-identity-provider-bundle</artifactId>
-    <version>1.23.1</version>
+    <version>1.23.2</version>
     <packaging>pom</packaging>
 
     <modules>
