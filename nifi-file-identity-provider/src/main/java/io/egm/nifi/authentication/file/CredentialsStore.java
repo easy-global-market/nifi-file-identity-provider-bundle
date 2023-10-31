@@ -16,28 +16,21 @@
 
 package io.egm.nifi.authentication.file;
 
+import io.egm.nifi.authentication.file.generated.ObjectFactory;
+import io.egm.nifi.authentication.file.generated.UserCredentials;
+import io.egm.nifi.authentication.file.generated.UserCredentialsList;
+import jakarta.xml.bind.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
 import java.util.List;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import io.egm.nifi.authentication.file.generated.ObjectFactory;
-import io.egm.nifi.authentication.file.generated.UserCredentials;
-import io.egm.nifi.authentication.file.generated.UserCredentialsList;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 /**
@@ -55,7 +48,7 @@ public class CredentialsStore {
     private static final JAXBContext JAXB_CONTEXT = initializeJaxbContext();
     private static final ObjectFactory factory = new ObjectFactory();
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private File credentialsFile;
     private long credentialsListLastModified;
     private UserCredentialsList credentialsList = factory.createUserCredentialsList();
@@ -68,12 +61,7 @@ public class CredentialsStore {
         }
     }
 
-    private static ValidationEventHandler defaultValidationEventHandler = new ValidationEventHandler() {
-        @Override
-        public boolean handleEvent(ValidationEvent event) {
-            return false;
-        }
-    };
+    private static final ValidationEventHandler defaultValidationEventHandler = event -> false;
 
     static UserCredentialsList loadCredentialsList(String filePath) throws Exception {
         final File credentialsFile = new File(filePath);
@@ -90,8 +78,7 @@ public class CredentialsStore {
             unmarshaller.setEventHandler(validationEventHandler);
             final JAXBElement<UserCredentialsList> element = unmarshaller.unmarshal(new StreamSource(credentialsFile),
                     UserCredentialsList.class);
-            UserCredentialsList credentialsList = element.getValue();
-            return credentialsList;
+            return element.getValue();
         } else {
             final String notFoundMessage = "The credentials configuration file was not found at: " +
                     credentialsFile.getAbsolutePath();
@@ -110,8 +97,7 @@ public class CredentialsStore {
 
     public static CredentialsStore fromFile(String filePath) throws Exception {
         UserCredentialsList credentialsList = loadCredentialsList(filePath);
-        CredentialsStore credStore = new CredentialsStore(credentialsList);
-        return credStore;
+        return new CredentialsStore(credentialsList);
     }
 
     public static CredentialsStore fromFile(File file) throws Exception {
