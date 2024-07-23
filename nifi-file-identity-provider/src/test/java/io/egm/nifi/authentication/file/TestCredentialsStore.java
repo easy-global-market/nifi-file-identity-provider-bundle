@@ -18,6 +18,7 @@ package io.egm.nifi.authentication.file;
 
 import io.egm.nifi.authentication.file.generated.UserCredentials;
 import io.egm.nifi.authentication.file.generated.UserCredentialsList;
+import jakarta.xml.bind.UnmarshalException;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +60,7 @@ public class TestCredentialsStore {
     public void testLoadInvalidCredentialsFileMessaging() throws Exception {
         try {
             CredentialsStore.loadCredentialsList(TEST_INVALID_CREDENTIALS_FILE);
-        } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
+        } catch (UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
             assertTrue(exceptionMessage.contains("invalid_credentials"));
             assertTrue(exceptionMessage.contains(TEST_INVALID_CREDENTIALS_FILE));
@@ -71,7 +72,7 @@ public class TestCredentialsStore {
         try {
             CredentialsStore.loadCredentialsList(TEST_DUPLICATE_USER_CREDENTIALS_FILE);
             fail("Duplicate user in credentials file should throw an exception");
-        } catch (javax.xml.bind.UnmarshalException unmarshalEx) {
+        } catch (UnmarshalException unmarshalEx) {
             String exceptionMessage = unmarshalEx.toString();
             assertTrue(exceptionMessage.contains("unique"));
             assertTrue(exceptionMessage.contains(TEST_DUPLICATE_USER_CREDENTIALS_FILE));
