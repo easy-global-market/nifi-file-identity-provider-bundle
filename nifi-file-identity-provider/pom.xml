@@ -21,7 +21,7 @@
     <parent>
         <groupId>io.egm</groupId>
         <artifactId>nifi-file-identity-provider-bundle</artifactId>
-        <version>1.23.2</version>
+        <version>1.27.0</version>
     </parent>
 
     <artifactId>nifi-file-identity-provider</artifactId>
@@ -127,22 +127,22 @@
         <dependency>
             <groupId>org.apache.nifi</groupId>
             <artifactId>nifi-api</artifactId>
-            <version>1.23.2</version>
+            <version>1.27.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.nifi</groupId>
             <artifactId>nifi-framework-api</artifactId>
-            <version>1.23.2</version>
+            <version>1.27.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.nifi</groupId>
             <artifactId>nifi-utils</artifactId>
-            <version>1.23.2</version>
+            <version>1.27.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.nifi</groupId>
             <artifactId>nifi-properties</artifactId>
-            <version>1.23.2</version>
+            <version>1.27.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
