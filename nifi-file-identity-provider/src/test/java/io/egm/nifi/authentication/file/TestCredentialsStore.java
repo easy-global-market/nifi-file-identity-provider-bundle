@@ -18,10 +18,10 @@ package io.egm.nifi.authentication.file;
 
 import io.egm.nifi.authentication.file.generated.UserCredentials;
 import io.egm.nifi.authentication.file.generated.UserCredentialsList;
-import jakarta.xml.bind.UnmarshalException;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;

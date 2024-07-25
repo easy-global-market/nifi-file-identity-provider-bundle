@@ -19,11 +19,11 @@ package io.egm.nifi.authentication.file;
 import io.egm.nifi.authentication.file.generated.ObjectFactory;
 import io.egm.nifi.authentication.file.generated.UserCredentials;
 import io.egm.nifi.authentication.file.generated.UserCredentialsList;
-import jakarta.xml.bind.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
