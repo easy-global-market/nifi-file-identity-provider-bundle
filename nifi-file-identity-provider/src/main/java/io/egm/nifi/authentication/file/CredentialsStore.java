@@ -22,8 +22,8 @@ import io.egm.nifi.authentication.file.generated.UserCredentialsList;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import jakarta.xml.bind.*;
 import javax.xml.XMLConstants;
-import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -176,9 +176,7 @@ public class CredentialsStore {
         UserCredentials userCreds = findUser(userName);
         if (userCreds != null) {
             final String hashedPassword = userCreds.getPasswordHash();
-            if (encoder.matches(rawPassword, hashedPassword)){
-                return true;
-            }
+            return encoder.matches(rawPassword, hashedPassword);
         }
         return false;
     }
@@ -188,8 +186,7 @@ public class CredentialsStore {
         if (userCreds != null) {
             UserCredentialsList credentialsList = getCredentialsList();
             List<UserCredentials> usersList = credentialsList.getUser();
-            boolean removed = usersList.remove(userCreds);
-            return removed;
+            return usersList.remove(userCreds);
         }
         return false;
     }
@@ -208,8 +205,7 @@ public class CredentialsStore {
     }
 
     public void save(String saveFilePath) throws Exception {
-        File saveFile = new File(saveFilePath);
-        credentialsFile = saveFile;
+        credentialsFile = new File(saveFilePath);
         save();
     }
 }

@@ -21,7 +21,7 @@ import io.egm.nifi.authentication.file.generated.UserCredentialsList;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.UnmarshalException;
+import jakarta.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
@@ -51,7 +51,7 @@ public class TestCredentialsStore {
         final List<UserCredentials> users = credentials.getUser();
         assertEquals(2, users.size());
 
-        final UserCredentials userCred = users.get(0);
+        final UserCredentials userCred = users.getFirst();
         assertEquals("user1", userCred.getName());
         assertEquals("fakePasswordHash", userCred.getPasswordHash());
     }

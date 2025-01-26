@@ -115,12 +115,12 @@
                 <dependency>
                     <groupId>jakarta.xml.bind</groupId>
                     <artifactId>jakarta.xml.bind-api</artifactId>
-                    <version>2.3.3</version>
+                    <version>4.0.2</version>
                 </dependency>
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
-                    <version>2.3.9</version>
+                    <version>4.0.5</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -150,12 +150,12 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>2.3.3</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.9</version>
+            <version>4.0.5</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
