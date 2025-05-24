@@ -8,27 +8,30 @@ seems to no longer exist. An archived fork was still existing somewhere on GitHu
 this archive.
 
 ## Use
+
 To install and use this provider you must complete the following steps:
 
 1. Build the provider NAR file
 2. Deploy the provider NAR file to your NiFi installation
 3. Configure NiFi for HTTPS
 4. Configure the File Authorization Provider `login-identity-providers.xml`
-5. Identity of the File Authorization Provider must be set in `nifi.properties`
-6. Users and their Bcrypt-hashed passwords must be added to `login-credentials.xml`
+5. Configure identity of the File Authorization Provider in `nifi.properties`
+6. Add users and their Bcrypt-hashed passwords in `login-credentials.xml`
 
 ### Build
+
 Build this package with:
 ```
 mvn clean package
 ```
-You will need to deploy the resulting NAR file from the `nifi-file-identity-provider-nar/target` directory
-(NAR file will look like `nifi-file-identity-provider-nar-1.0.0.nar`).
 
 ### Deploy
-The provider NAR file should be deployed to your NiFi's `lib` directory.
+
+Deploy the resulting NAR file from the `nifi-file-identity-provider-nar/target` directory (NAR file will look 
+like `nifi-file-identity-provider-nar-1.0.0.nar`) into the `lib` directory of your NiFi installation.
 
 ### Configure NiFi for HTTPS
+
 NiFi must be configured for HTTPS, including at least the following settings in `nifi.properties`:
 * nifi.web.https.port
 * nifi.security.keystore
@@ -39,11 +42,12 @@ NiFi must be configured for HTTPS, including at least the following settings in 
 * nifi.security.truststoreType
 * nifi.security.truststorePasswd
 
-Please see the [NiFi Administration Guide](https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html)
-for more information on secure access configurations.
+Please see the [NiFi Administration Guide](https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html) for more information on secure access configurations.
 
 ### Configure the File Identity Provider
-The following Login Identity Provider configuration should be added to `login-identity-providers.xml`:
+
+Add the following Login Identity Provider in `login-identity-providers.xml`:
+
 ```
 <provider>
     <identifier>file-identity-provider</identifier>
@@ -54,7 +58,8 @@ The following Login Identity Provider configuration should be added to `login-id
 ```
 
 ### Configure NiFi to Use the File Identity Provider
-After the provider itself is configured, reference this provider in `nifi.properties`.
+
+After the provider itself is configured, reference it in `nifi.properties`.
 
 ```
 nifi.security.user.login.identity.provider=file-identity-provider
@@ -62,10 +67,13 @@ nifi.security.user.authorizer=managed-authorizer
 ```
 
 ### Disable the Single User Authorizer
+
 In `conf/authorizers.xml`, comment out the `single-user-authorizer` configuration at the bottom of the file.
 
 ### Initialize User Credentials
-User credentials must be initialized in the credentials store file `conf/login-credentials.xml`.
+
+User credentials must be initialized in the credentials store file `login-credentials.xml`.
+
 This is an XML file with the following format:
 
 ```
@@ -85,7 +93,8 @@ This is an XML file with the following format:
 </credentials>
 ```
 
-#### Generating Bcrypt-hashed Passwords
+#### Generate Bcrypt-hashed Passwords
+
 Any tool capable of generating Bcyrpt type 2a hashed passwords may be used.  This package includes a simple command-line
 utility in the `PasswordHasherCLI` class (see below).  Additional known compatible tools and APIs include:
 
@@ -93,7 +102,26 @@ utility in the `PasswordHasherCLI` class (see below).  Additional known compatib
 * Python package [bcrypt](https://pypi.python.org/pypi/bcrypt/2.0.0)
 * Online [Bcrypt Generator](https://appdevtools.com/bcrypt-generator)
 
+#### Create and give admin rights to the first user
+
+Add an entry in the previously created `login-credentials.xml` for the first user, for instance:
+
+```
+<credentials>
+    <user name="nifi-admin" passwordHash="$2a$10$POV6w2nzonBWOyB4evQoUO8gG9oYABn2eWd/GdZ/RHceJiqDNYWGm" />
+</credentials>
+```
+
+Then configure it as the initial admin of the NiFi instance in `authorizers.xml`. This has to be done in:
+* Initial User Identity 1 property of the `userGroupProvider` section
+* Initial Admin Identity property of the `accessPolicyProvider` section
+
+### Start NiFi
+
+Start NiFi and connect using the credentials configured for the initial admin user.
+
 ### CLI Tool
+
 This package includes a command-line tool for simple operations on users and passwords.  Use of this tool is not required,
 it is possible to administer users with a text editor and any tool capable of generating Bcrypt 2a hashes.
 
@@ -128,4 +156,5 @@ Removed user frank
 ```
 
 ## License
+
 Apache License 2.0
