@@ -27,7 +27,7 @@
     <artifactId>nifi-file-identity-provider</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <nifi.version>2.6.0</nifi.version>
+        <nifi.version>2.7.2</nifi.version>
     </properties>
 
     <build>
