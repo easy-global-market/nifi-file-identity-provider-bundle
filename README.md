@@ -9,7 +9,7 @@ this archive.
 
 ## Use
 
-To install and use this provider you must complete the following steps:
+To install and use this provider, you must complete the following steps:
 
 1. Build the provider NAR file
 2. Deploy the provider NAR file to your NiFi installation
@@ -22,13 +22,13 @@ To install and use this provider you must complete the following steps:
 
 Build this package with:
 ```
-mvn clean package
+./mvnw clean package
 ```
 
 ### Deploy
 
 Deploy the resulting NAR file from the `nifi-file-identity-provider-nar/target` directory (NAR file will look 
-like `nifi-file-identity-provider-nar-1.0.0.nar`) into the `lib` directory of your NiFi installation.
+like `nifi-file-identity-provider-nar-2.8.0.nar`) into the `lib` directory of your NiFi installation.
 
 ### Configure NiFi for HTTPS
 
@@ -76,7 +76,7 @@ User credentials must be initialized in the credentials store file `login-creden
 
 This is an XML file with the following format:
 
-```
+```xml
 <!--
     This file contains users and their hashed passwords. Please see the
     io.egm.nifi.authentication.file.CredentialsStore for details.
@@ -125,33 +125,37 @@ Start NiFi and connect using the credentials configured for the initial admin us
 This package includes a command-line tool for simple operations on users and passwords.  Use of this tool is not required,
 it is possible to administer users with a text editor and any tool capable of generating Bcrypt 2a hashes.
 
-The JAR file `nifi-file-identity-provider-1.21.0-cli.jar` is output in the nifi-file-identity-provider/target directory.
+The JAR file `nifi-file-identity-provider-2.8.0-cli.jar` is output in the *nifi-file-identity-provider/target* directory.
 
 Add a user, you will be prompted for a password:
+
 ```
->java -jar nifi-file-identity-provider-1.21.0-cli.jar add conf/login-credentials.xml jane
+> java -jar nifi-file-identity-provider/target/nifi-file-identity-provider-2.8.0-cli.jar add conf/login-credentials.xml jane
 Password for jane: ****
 Added user jane
 ```
 
 Reset password, you will be prompted for password:
+
 ```
->java -jar nifi-file-identity-provider-1.21.0-cli.jar reset conf/login-credentials.xml jane
+> java -jar nifi-file-identity-provider/target/nifi-file-identity-provider-2.8.0-cli.jar reset conf/login-credentials.xml jane
 New Password for jane:
 Password reset for user jane
 ```
 
-List users
+List users:
+
 ```
->java -jar nifi-file-identity-provider-1.21.0-cli.jar list conf/login-credentials.xml
+> java -jar nifi-file-identity-provider/target/nifi-file-identity-provider-2.8.0-cli.jar list conf/login-credentials.xml
 john
 jane
 frank
 ```
 
-Delete user
+Delete user:
+
 ```
->java -jar nifi-file-identity-provider-1.21.0-cli.jar remove conf/login-credentials.xml frank
+> java -jar nifi-file-identity-provider/target/nifi-file-identity-provider-2.8.0-cli.jar remove conf/login-credentials.xml frank
 Removed user frank
 ```
 
