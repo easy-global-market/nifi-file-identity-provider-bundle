@@ -49,8 +49,8 @@ public class TestFileIdentityProvider {
 
 
     @Test
-    public void testConfigurationCredentialsFile() throws Exception {
-        final Map<String, String> configProperties = new HashMap<String, String>();
+    public void testConfigurationCredentialsFile() {
+        final Map<String, String> configProperties = new HashMap<>();
         configProperties.put(FileIdentityProvider.PROPERTY_CREDENTIALS_FILE, TEST_CREDENTIALS_FILE);
         configProperties.put(FileIdentityProvider.PROPERTY_EXPIRATION_PERIOD, FIVE_MINUTES);
         final LoginIdentityProviderConfigurationContext configContext =
@@ -238,7 +238,7 @@ public class TestFileIdentityProvider {
         );
     }
 
-    class MockLoginIdentityProviderConfigurationContext implements LoginIdentityProviderConfigurationContext {
+    static class MockLoginIdentityProviderConfigurationContext implements LoginIdentityProviderConfigurationContext {
         private final String identifier;
         private final Map<String, String> properties;
 
@@ -263,7 +263,7 @@ public class TestFileIdentityProvider {
         }
     }
 
-    class MockLoginIdentityProviderInitializationContext implements LoginIdentityProviderInitializationContext {
+    static class MockLoginIdentityProviderInitializationContext implements LoginIdentityProviderInitializationContext {
 
         private final String identifier;
 

@@ -19,10 +19,10 @@ package io.egm.nifi.authentication.file;
 import io.egm.nifi.authentication.file.generated.ObjectFactory;
 import io.egm.nifi.authentication.file.generated.UserCredentials;
 import io.egm.nifi.authentication.file.generated.UserCredentialsList;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.xml.bind.*;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -48,7 +48,6 @@ public class CredentialsStore {
     private static final JAXBContext JAXB_CONTEXT = initializeJaxbContext();
     private static final ObjectFactory factory = new ObjectFactory();
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private File credentialsFile;
     private long credentialsListLastModified;
     private UserCredentialsList credentialsList = factory.createUserCredentialsList();
@@ -157,8 +156,7 @@ public class CredentialsStore {
     }
 
     UserCredentials setPassword(UserCredentials userCreds, String rawPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode(rawPassword);
+        String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
         userCreds.setPasswordHash(hashedPassword);
         return userCreds;
     }
@@ -172,11 +170,10 @@ public class CredentialsStore {
     }
 
     public boolean checkPassword(String userName, String rawPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         UserCredentials userCreds = findUser(userName);
         if (userCreds != null) {
             final String hashedPassword = userCreds.getPasswordHash();
-            return encoder.matches(rawPassword, hashedPassword);
+            return BCrypt.checkpw(rawPassword, hashedPassword);
         }
         return false;
     }

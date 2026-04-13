@@ -70,28 +70,18 @@ public class CredentialsCLI {
         }
         String command = args[0];
         String credentialsFile = args[1];
-        switch (command) {
-            case "list":
-                action = new ListUsersAction(credentialsFile);
-                break;
-            case "add":
-                action = new AddUserAction(credentialsFile);
-                break;
-            case "reset":
-                action = new ResetPasswordAction(credentialsFile);
-                break;
-            case "remove":
-                action = new RemoveUserAction(credentialsFile);
-                break;
-            default:
-                action = new PrintHelpAction();
-                break;
-        }
+        action = switch (command) {
+            case "list" -> new ListUsersAction(credentialsFile);
+            case "add" -> new AddUserAction(credentialsFile);
+            case "reset" -> new ResetPasswordAction(credentialsFile);
+            case "remove" -> new RemoveUserAction(credentialsFile);
+            default -> new PrintHelpAction();
+        };
         action.setArgs(args);
         return action;
     }
 
-    abstract class CredentialsAction {
+    abstract static class CredentialsAction {
         abstract void execute() throws Exception;
         String[] args = null;
         String[] outputs = new String[]{};
@@ -119,7 +109,7 @@ public class CredentialsCLI {
             return credStore;
         }
 
-        void setArgs(String args[]) {
+        void setArgs(String[] args) {
             this.args = args;
         }
 
@@ -162,7 +152,7 @@ public class CredentialsCLI {
 
     }
 
-    class PrintHelpAction extends CredentialsAction {
+    static class PrintHelpAction extends CredentialsAction {
         void execute() {
             this.outputs = new String[] {
                     "Credentials Manager",
@@ -177,7 +167,7 @@ public class CredentialsCLI {
         }
     }
 
-    class ListUsersAction extends CredentialsAction {
+    static class ListUsersAction extends CredentialsAction {
 
         ListUsersAction(String credentialsFile) {
             super(credentialsFile);
@@ -198,7 +188,7 @@ public class CredentialsCLI {
         }
     }
 
-    class AddUserAction extends CredentialsAction {
+    static class AddUserAction extends CredentialsAction {
 
         AddUserAction(String credentialsFile) {
             super(credentialsFile);
@@ -218,14 +208,11 @@ public class CredentialsCLI {
         }
 
         String getSecurePrompt() {
-            String formattedPrompt = String.format("Password for %1s: ", args[2]);
-            return formattedPrompt;
+            return String.format("Password for %1s: ", args[2]);
         }
-
-
     }
 
-    class ResetPasswordAction extends CredentialsAction {
+    static class ResetPasswordAction extends CredentialsAction {
 
         ResetPasswordAction(String credentialsFile) {
             super(credentialsFile);
@@ -246,13 +233,12 @@ public class CredentialsCLI {
         }
 
         String getSecurePrompt() {
-            String formattedPrompt = String.format("New Password for %1s: ", args[2]);
-            return formattedPrompt;
+            return String.format("New Password for %1s: ", args[2]);
         }
 
     }
 
-    class RemoveUserAction extends CredentialsAction {
+    static class RemoveUserAction extends CredentialsAction {
 
         RemoveUserAction(String credentialsFile) {
             super(credentialsFile);
